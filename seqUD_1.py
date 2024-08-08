@@ -136,43 +136,44 @@ class SeqUD(BaseSampler):
         for _ in range(self.max_runs):
             self.study.optimize(objective, n_trials=self.n_runs_per_stage)
 
-# テスト用コード
-def octopus(trial):
-    x1 = trial.suggest_uniform('x1', 0, 1)
-    x2 = trial.suggest_uniform('x2', 0, 1)
-    y = 2 * np.cos(10 * x1) * np.sin(10 * x2) + np.sin(10 * x1 * x2)
-    return y
 
-param_space = {
-    'x1': {'Type': 'continuous', 'Range': [0, 1], 'Wrapper': lambda x: x},
-    'x2': {'Type': 'continuous', 'Range': [0, 1], 'Wrapper': lambda x: x}
-}
-
-sampler = SeqUD(param_space, max_runs=10, n_runs_per_stage=40, random_state=None)
-study = optuna.create_study(sampler=sampler, direction='maximize')
-study.optimize(octopus, n_trials=400)
-
-print(f"Best trial value: {study.best_value}")
-print(f"Best trial params: {study.best_params}")
-
-def plot_trajectory(xlim, ylim, func, study, title):
-    grid_num = 25
-    xlist = np.linspace(xlim[0], xlim[1], grid_num)
-    ylist = np.linspace(ylim[0], ylim[1], grid_num)
-    X, Y = np.meshgrid(xlist, ylist)
-    Z = np.zeros((grid_num, grid_num))
-    for i, x1 in enumerate(xlist):
-        for j, x2 in enumerate(ylist):
-            Z[j, i] = func(optuna.trial.FixedTrial({"x1": x1, "x2": x2}))
-
-    cp = plt.contourf(X, Y, Z)
-    plt.scatter([t.params['x1'] for t in study.trials],
-                [t.params['x2'] for t in study.trials], color="red")
-    plt.xlim(xlim[0], xlim[1])
-    plt.ylim(ylim[0], ylim[1])
-    plt.colorbar(cp)
-    plt.xlabel('x1')
-    plt.ylabel('x2')
-    plt.title(title)
-
-plot_trajectory([0, 1], [0, 1], octopus, study, "SeqUD")
+if __name__ == "__main__":
+    def octopus(trial):
+        x1 = trial.suggest_uniform('x1', 0, 1)
+        x2 = trial.suggest_uniform('x2', 0, 1)
+        y = 2 * np.cos(10 * x1) * np.sin(10 * x2) + np.sin(10 * x1 * x2)
+        return y
+    
+    param_space = {
+        'x1': {'Type': 'continuous', 'Range': [0, 1], 'Wrapper': lambda x: x},
+        'x2': {'Type': 'continuous', 'Range': [0, 1], 'Wrapper': lambda x: x}
+    }
+    
+    sampler = SeqUD(param_space, max_runs=10, n_runs_per_stage=40, random_state=None)
+    study = optuna.create_study(sampler=sampler, direction='maximize')
+    study.optimize(octopus, n_trials=400)
+    
+    print(f"Best trial value: {study.best_value}")
+    print(f"Best trial params: {study.best_params}")
+    
+    def plot_trajectory(xlim, ylim, func, study, title):
+        grid_num = 25
+        xlist = np.linspace(xlim[0], xlim[1], grid_num)
+        ylist = np.linspace(ylim[0], ylim[1], grid_num)
+        X, Y = np.meshgrid(xlist, ylist)
+        Z = np.zeros((grid_num, grid_num))
+        for i, x1 in enumerate(xlist):
+            for j, x2 in enumerate(ylist):
+                Z[j, i] = func(optuna.trial.FixedTrial({"x1": x1, "x2": x2}))
+    
+        cp = plt.contourf(X, Y, Z)
+        plt.scatter([t.params['x1'] for t in study.trials],
+                    [t.params['x2'] for t in study.trials], color="red")
+        plt.xlim(xlim[0], xlim[1])
+        plt.ylim(ylim[0], ylim[1])
+        plt.colorbar(cp)
+        plt.xlabel('x1')
+        plt.ylabel('x2')
+        plt.title(title)
+    
+    plot_trajectory([0, 1], [0, 1], octopus, study, "SeqUD")
