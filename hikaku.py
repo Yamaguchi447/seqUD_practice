@@ -8,6 +8,7 @@ import pandas as pd
 import optunahub
 from optuna.distributions import FloatDistribution
 from optuna.samplers.seqUD_1 import SeqUD
+from optuna.samplers.ud import UniformDesignSampler
 
 from bbob.run_bbob import eval
 
