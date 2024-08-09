@@ -7,13 +7,12 @@ import optuna
 import pandas as pd
 import optunahub
 from optuna.distributions import FloatDistribution
+
+# 下記２つは同ディレクトリに置いておりますので，よろしくお願いいたします
 from optuna.samplers.seqUD_1 import SeqUD
 from optuna.samplers.ud import UniformDesignSampler
 
 from bbob.run_bbob import eval
-
-module = optunahub.load_module("samplers/uniform_design")
-UniformDesignSampler = module.UniformDesignSampler
 
 def sort_data(data, descending=True):
     new_data = []
