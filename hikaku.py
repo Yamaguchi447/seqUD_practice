@@ -63,7 +63,7 @@ def run_experiment():
     samplers = {
         "random": optuna.samplers.RandomSampler(seed=SEED),
         "cmaes": optuna.samplers.CmaEsSampler(popsize=30, seed=SEED),
-        "uniform": UniformDesignSampler(search_space=search_space, discretization_level=30),
+        "uniform": UniformDesignSampler(search_space=search_space, discretization_level=200),
         "sequd": SeqUD(param_space, max_runs=7, n_runs_per_stage=30, random_state=SEED)
     }
     
